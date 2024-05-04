@@ -119,13 +119,16 @@ function ChatWrapper() {
           <p className="py-4">{productsStore.activeProduct?.description}</p>
           <div className="modal-action">
             <form method="dialog">
+              <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                ✕
+              </button>
               <button className="btn">Закрыть</button>
             </form>
           </div>
         </div>
-        <label className="modal-backdrop" htmlFor="info-product-modal">
-          Close
-        </label>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
       </dialog>
     </>
   );

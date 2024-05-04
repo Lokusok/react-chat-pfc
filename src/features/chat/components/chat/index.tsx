@@ -141,15 +141,14 @@ function Chat(props: TChatProps) {
   };
 
   useEffect(() => {
-    const animationFrame = window.requestAnimationFrame(() => {
+    // Иначе может сломаться скролл
+    window.requestIdleCallback(() => {
       if (!dialogBoxRef.current) return;
       dialogBoxRef.current.scrollTo({
         top: dialogBoxRef.current.scrollHeight,
         behavior: 'smooth',
       });
     });
-
-    return () => window.cancelAnimationFrame(animationFrame);
   }, [dialog]);
 
   useEffect(() => {
