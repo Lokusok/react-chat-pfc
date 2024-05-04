@@ -21,6 +21,7 @@ class ApiService {
    */
   static async getProduct(options: TGetProductOptions) {
     try {
+      // throw new Error('Err'); // Для тестов ошибок
       const isFullOptions = 'aLot' in options;
       const params = isFullOptions
         ? {

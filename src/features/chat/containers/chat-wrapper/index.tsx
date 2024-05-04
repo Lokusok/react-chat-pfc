@@ -5,7 +5,7 @@ import Chat from '../../components/chat';
 import ApiService from '../../../../api/api-service';
 import { TProduct } from '../../store/products/types';
 
-import { useProductsStore, useChatStore } from '../../store';
+import { useProductsStore, useChatStore, useSnackbarsStore } from '../../store';
 
 import buildPhrase from '../../utils/build-phrase';
 import buildBotMessage from '../../utils/build-bot-message';
@@ -15,6 +15,7 @@ function ChatWrapper() {
 
   const productsStore = useProductsStore();
   const chatStore = useChatStore();
+  const snackbarsStore = useSnackbarsStore();
 
   const helpers = {
     fetchProduct: async (product: TProducts, aLot = false) => {
@@ -30,6 +31,14 @@ function ChatWrapper() {
           product,
           aLot,
         });
+
+        if (productItem.error) {
+          return snackbarsStore.setErrorSnack({
+            buttonText: 'Понятно',
+            bodyText: productItem.error,
+            timeout: 3000,
+          });
+        }
 
         // const botMessage = buildBotMessage(productItem);
         // @todo заменить на верхнюю
