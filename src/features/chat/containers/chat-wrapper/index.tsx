@@ -31,7 +31,15 @@ function ChatWrapper() {
           aLot,
         });
 
-        const botMessage = buildBotMessage(productItem);
+        // const botMessage = buildBotMessage(productItem);
+        // @todo заменить на верхнюю
+        const botMessage = buildBotMessage({
+          title: 'Петрушка',
+          description:
+            'Таким образом дальнейшее развитие различных форм деятельности обеспечивает широкому кругу (специалистов) участие в формировании системы обучения кадров, соответствует насущным потребностям. Идейные соображения высшего порядка.',
+          image:
+            'https://medseen.ru/wp-content/uploads/2023/10/scale_1200.jpeg',
+        });
         chatStore.addMessage(botMessage);
 
         return productItem;

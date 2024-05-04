@@ -2,6 +2,7 @@ import { TMessage } from '../../store/chat/types';
 import { TProduct } from '../../store/products/types';
 
 function buildBotMessage(product: TProduct): TMessage {
+  console.log('here: ', product);
   const message: TMessage = {
     id: crypto.randomUUID(),
     from: 'bot',
