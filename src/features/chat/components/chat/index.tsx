@@ -1,9 +1,10 @@
 import { memo, useEffect, useRef, useState } from 'react';
 import { Search } from 'lucide-react';
 
+import Actions from '../chat-actions';
+
 import botImage from '../../assets/bot-image.jpg';
 import userImage from '../../assets/user-image.jpg';
-import Actions from '../chat-actions';
 
 import { TProduct } from '../../store/products/types';
 import { TMessage } from '../../store/chat/types';
@@ -127,16 +128,9 @@ function Chat(props: TChatProps) {
       setShowLarge(val);
     },
 
-    onMoreBtnClick: () => {
-      if (!onMoreBtnClick) return;
-
-      const product: TProduct = {
-        title: 'Петрушка',
-        description:
-          'Таким образом дальнейшее развитие различных форм деятельности обеспечивает широкому кругу (специалистов) участие в формировании системы обучения кадров, соответствует насущным потребностям. Идейные соображения высшего порядка.',
-        image: 'https://medseen.ru/wp-content/uploads/2023/10/scale_1200.jpeg',
-      };
-      onMoreBtnClick?.(product);
+    onMoreBtnClick: (message: TMessage) => {
+      if (!onMoreBtnClick || !message.product) return;
+      onMoreBtnClick?.(message.product);
     },
   };
 
@@ -185,7 +179,7 @@ function Chat(props: TChatProps) {
 
         <div
           ref={dialogBoxRef}
-          className="max-h-[370px] px-3 overflow-y-auto scrollbar scrollbar-thin scrollbar-thumb-rounded-full scrollbar-thumb-[#00c530] scrollbar-track-[#252525]"
+          className="max-h-[370px] px-3 overflow-y-auto scrollbar-thin scrollbar-thumb-rounded-full scrollbar-thumb-[#00c530] scrollbar-track-[rgba(0,0,0,0.1)]"
         >
           {dialog.map((message) =>
             message.from === 'bot' ? (
@@ -193,7 +187,9 @@ function Chat(props: TChatProps) {
                 <div className="chat-image avatar">
                   <div className="w-10 rounded-full">
                     <img
-                      alt="Tailwind CSS chat bubble component"
+                      alt=""
+                      role="presentation"
+                      aria-hidden="true"
                       src={botImage}
                     />
                   </div>
@@ -207,13 +203,16 @@ function Chat(props: TChatProps) {
                         alt={message.text.split(' ').slice(0, 4).join(' ')}
                       />
                       {Boolean(onMoreBtnClick) && (
-                        <div className="absolute top-[7.5px] right-[7.5px] btn btn-sm btn-circle">
+                        <div
+                          onClick={() => handlers.onMoreBtnClick(message)}
+                          className="absolute top-[7.5px] right-[7.5px] btn btn-sm btn-circle"
+                        >
                           <div
                             className="tooltip tooltip-left"
                             data-tip="Подробнее"
                           >
-                            <button onClick={handlers.onMoreBtnClick}>
-                              <Search />
+                            <button>
+                              <Search style={{ zIndex: -1 }} />
                             </button>
                           </div>
                         </div>
@@ -228,7 +227,9 @@ function Chat(props: TChatProps) {
                 <div className="chat-image avatar">
                   <div className="w-10 rounded-full">
                     <img
-                      alt="Tailwind CSS chat bubble component"
+                      alt=""
+                      role="presentation"
+                      aria-hidden="true"
                       src={userImage}
                     />
                   </div>

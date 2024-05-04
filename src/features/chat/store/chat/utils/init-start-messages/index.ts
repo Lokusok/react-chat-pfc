@@ -8,11 +8,13 @@ function initStartMessages(): TMessage[] {
     {
       id: crypto.randomUUID(),
       from: 'bot',
+      type: 'default',
       text: 'Я - бот, который поможет Вам подобрать продукты под Ваши предпочтения БЖУ!',
     },
     {
       id: crypto.randomUUID(),
       from: 'bot',
+      type: 'default',
       text: 'Внизу расположены кнопки. Нажмите на них, чтобы получить продукт под желаемый запрос.',
     },
   ];

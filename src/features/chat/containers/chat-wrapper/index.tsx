@@ -1,4 +1,4 @@
-import { memo, useRef } from 'react';
+import { memo, useEffect, useRef } from 'react';
 
 import Chat from '../../components/chat';
 
@@ -6,7 +6,9 @@ import ApiService from '../../../../api/api-service';
 import { TProduct } from '../../store/products/types';
 
 import { useProductsStore, useChatStore } from '../../store';
-import buildPhrase from '../utils/build-phrase';
+
+import buildPhrase from '../../utils/build-phrase';
+import buildBotMessage from '../../utils/build-bot-message';
 
 function ChatWrapper() {
   const modalInfoRef = useRef<HTMLDialogElement>(null);
@@ -21,7 +23,7 @@ function ChatWrapper() {
         chatStore.setWaitingProduct(product);
 
         const text = buildPhrase({ product, aLot });
-        chatStore.addMessage({ from: 'user', text });
+        chatStore.addMessage({ from: 'user', text, type: 'default' });
 
         await new Promise((res) => setTimeout(res, 1000));
         const productItem = await ApiService.getProduct({
@@ -29,14 +31,8 @@ function ChatWrapper() {
           aLot,
         });
 
-        chatStore.addMessage({
-          from: 'bot',
-          // productItem.name
-          text: 'Нашёл продукт! Думаю, вам подойдёт - Петрушка.',
-          image:
-            // productItem.preview
-            'https://medseen.ru/wp-content/uploads/2023/10/scale_1200.jpeg',
-        });
+        const botMessage = buildBotMessage(productItem);
+        chatStore.addMessage(botMessage);
 
         return productItem;
       } finally {
@@ -87,7 +83,12 @@ function ChatWrapper() {
     },
   };
 
+  // will remove on later stages
   console.log({ waiting: chatStore.waiting });
+
+  useEffect(() => {
+    console.log('messages:', chatStore.messages);
+  }, [chatStore.messages]);
 
   return (
     <>
@@ -127,7 +128,7 @@ function ChatWrapper() {
           </div>
         </div>
         <form method="dialog" className="modal-backdrop">
-          <button>close</button>
+          <button>Закрыть</button>
         </form>
       </dialog>
     </>

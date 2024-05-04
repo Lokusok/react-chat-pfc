@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { TMessage, TInitChatState } from './types';
 
-import buildMessage from './utils/build-message';
+import buildMessage from '../../utils/build-message';
 import initStartMessages from './utils/init-start-messages';
 
 export const useChatStore = create<TInitChatState>((set) => ({
@@ -9,12 +9,13 @@ export const useChatStore = create<TInitChatState>((set) => ({
   waiting: false,
   waitingProduct: null,
 
-  addMessage: (message: Omit<TMessage, 'id'>) => {
-    const newMessage = buildMessage(message);
+  addMessage: (message: Omit<TMessage, 'id'> | TMessage) => {
+    let correctMessage = { ...message };
+    if (!('id' in message)) correctMessage = buildMessage(message);
 
     set((state) => ({
       ...state,
-      messages: [...state.messages, newMessage],
+      messages: [...state.messages, correctMessage as TMessage],
     }));
   },
 
