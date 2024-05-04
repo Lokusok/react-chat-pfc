@@ -1,9 +1,11 @@
-import { memo, useState } from 'react';
+import { memo, useState, useRef } from 'react';
 
 import Chat from '../../components/chat';
 
 import ApiService from '../../../../api/api-service';
 import { TDialogMessage } from '../../types';
+import { useProductsStore } from '../../store/products';
+import { TProduct } from '../../store/products/types';
 
 const phrases = {
   aLotCarbohydrates: 'Хочу продукт с большим количеством углеводов.',
@@ -11,7 +13,7 @@ const phrases = {
   aLotProteins: 'Хочу продукт с большим количеством белков.',
 
   aSmallCarbohydrates: 'Хочу продукт с малым количеством углеводов.',
-  aSmallFats: 'Хочу продукт с малым количеством жиров',
+  aSmallFats: 'Хочу продукт с малым количеством жиров.',
   aSmallProteins: 'Хочу продукт с малым количеством белков.',
 
   balanced: 'Хочу сбалансированный продукт.',
@@ -49,6 +51,10 @@ function ChatWrapper() {
   const [dialog, setDialog] = useState<TDialogMessage[]>(initDialog);
   const [waiting, setIsWaiting] = useState(false);
   const [waitingProduct, setWaitingProduct] = useState<TProducts | null>(null);
+
+  const modalInfoRef = useRef<HTMLDialogElement>(null);
+
+  const productsStore = useProductsStore();
 
   const helpers = {
     fetchProduct: async (product: TProducts, aLot = false) => {
@@ -125,6 +131,14 @@ function ChatWrapper() {
     },
   };
 
+  const handlers = {
+    onMoreBtnClick: (product: TProduct) => {
+      if (!modalInfoRef.current) return;
+      productsStore.setActiveProduct(product);
+      modalInfoRef.current.showModal();
+    },
+  };
+
   console.log({ waiting });
 
   return (
@@ -134,7 +148,34 @@ function ChatWrapper() {
         loading={waiting}
         callbacks={callbacks}
         dialog={dialog}
+        onMoreBtnClick={handlers.onMoreBtnClick}
       />
+
+      <dialog
+        ref={modalInfoRef}
+        id="my_modal_5"
+        className="modal modal-bottom sm:modal-middle"
+      >
+        <div className="modal-box">
+          <h3 className="font-bold text-[30px] text-center mb-2">
+            {productsStore.activeProduct?.title}: описание
+          </h3>
+          <div className="flex justify-center">
+            <div className="max-w-[300px] rounded-lg overflow-hidden">
+              <img
+                src={productsStore.activeProduct?.image}
+                alt={productsStore.activeProduct?.title}
+              />
+            </div>
+          </div>
+          <p className="py-4">{productsStore.activeProduct?.description}</p>
+          <div className="modal-action">
+            <form method="dialog">
+              <button className="btn">Закрыть</button>
+            </form>
+          </div>
+        </div>
+      </dialog>
     </>
   );
 }

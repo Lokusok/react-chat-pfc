@@ -1,10 +1,12 @@
 import { memo, useLayoutEffect, useRef, useState } from 'react';
+import { Search } from 'lucide-react';
 
 import botImage from '../../assets/bot-image.jpg';
 import userImage from '../../assets/user-image.jpg';
 import Actions from '../chat-actions';
 
 import { TDialogMessage } from '../../types';
+import { TProduct } from '../../store/products/types';
 
 type TChatProps = {
   loadingProduct?: TProducts | null;
@@ -19,10 +21,11 @@ type TChatProps = {
     getSmallProteins: () => void;
     getBalanced: () => void;
   };
+  onMoreBtnClick?: (product: TProduct) => void;
 };
 
 function Chat(props: TChatProps) {
-  const { loading, loadingProduct, dialog, callbacks } = props;
+  const { loading, loadingProduct, onMoreBtnClick, dialog, callbacks } = props;
 
   const [showLarge, setShowLarge] = useState(false);
   const dialogBoxRef = useRef<HTMLDivElement>(null);
@@ -121,17 +124,30 @@ function Chat(props: TChatProps) {
     onTogglerChange: (val: boolean) => {
       setShowLarge(val);
     },
+
+    onMoreBtnClick: () => {
+      if (!onMoreBtnClick) return;
+
+      const product: TProduct = {
+        title: 'Петрушка',
+        description:
+          'Таким образом дальнейшее развитие различных форм деятельности обеспечивает широкому кругу (специалистов) участие в формировании системы обучения кадров, соответствует насущным потребностям. Идейные соображения высшего порядка.',
+        image: 'https://medseen.ru/wp-content/uploads/2023/10/scale_1200.jpeg',
+      };
+      onMoreBtnClick?.(product);
+    },
   };
 
   useLayoutEffect(() => {
-    window.requestAnimationFrame(() => {
+    const animationFrame = window.requestAnimationFrame(() => {
       if (!dialogBoxRef.current) return;
-
       dialogBoxRef.current.scrollTo({
         top: dialogBoxRef.current.scrollHeight,
         behavior: 'smooth',
       });
     });
+
+    return () => window.cancelAnimationFrame(animationFrame);
   }, [dialog]);
 
   return (
@@ -158,12 +174,24 @@ function Chat(props: TChatProps) {
                 </div>
                 <div className="chat-bubble">
                   {Boolean(message.image) && (
-                    <div className="rounded-lg overflow-hidden mb-[15px] max-w-[300px]">
+                    <div className="rounded-lg overflow-hidden mb-[15px] max-w-[300px] relative">
                       <img
                         className="w-[100%] h-[100%] object-cover"
                         src={message.image}
                         alt={message.text.split(' ').slice(0, 4).join(' ')}
                       />
+                      {Boolean(onMoreBtnClick) && (
+                        <div className="absolute top-[7.5px] right-[7.5px] btn btn-sm btn-circle">
+                          <div
+                            className="tooltip tooltip-left"
+                            data-tip="Подробнее"
+                          >
+                            <button onClick={handlers.onMoreBtnClick}>
+                              <Search />
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                   <div>{message.text}</div>
