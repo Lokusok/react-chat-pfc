@@ -1,17 +1,17 @@
-import { memo, useLayoutEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { Search } from 'lucide-react';
 
 import botImage from '../../assets/bot-image.jpg';
 import userImage from '../../assets/user-image.jpg';
 import Actions from '../chat-actions';
 
-import { TDialogMessage } from '../../types';
 import { TProduct } from '../../store/products/types';
+import { TMessage } from '../../store/chat/types';
 
 type TChatProps = {
   loadingProduct?: TProducts | null;
   loading?: boolean;
-  dialog: TDialogMessage[];
+  dialog: TMessage[];
   callbacks: {
     getLargeCarbohydrates: () => void;
     getLargeFats: () => void;
@@ -28,7 +28,9 @@ function Chat(props: TChatProps) {
   const { loading, loadingProduct, onMoreBtnClick, dialog, callbacks } = props;
 
   const [showLarge, setShowLarge] = useState(false);
+
   const dialogBoxRef = useRef<HTMLDivElement>(null);
+  const chatBoxRef = useRef<HTMLDivElement>(null);
 
   const options = {
     disabledActions: loading,
@@ -138,7 +140,7 @@ function Chat(props: TChatProps) {
     },
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const animationFrame = window.requestAnimationFrame(() => {
       if (!dialogBoxRef.current) return;
       dialogBoxRef.current.scrollTo({
@@ -150,8 +152,33 @@ function Chat(props: TChatProps) {
     return () => window.cancelAnimationFrame(animationFrame);
   }, [dialog]);
 
+  useEffect(() => {
+    if (!chatBoxRef.current) return;
+    let initialHeight: number | null = null;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      if (!chatBoxRef.current) return;
+
+      for (const entry of entries) {
+        if (!initialHeight) {
+          initialHeight = entry.contentRect.height;
+          return;
+        }
+
+        const newHeight = entry.contentRect.height;
+        if (newHeight > initialHeight) {
+          chatBoxRef.current.style.marginTop = 40 + 'px';
+        }
+      }
+    });
+
+    resizeObserver.observe(chatBoxRef.current);
+
+    return () => resizeObserver.disconnect();
+  }, []);
+
   return (
-    <>
+    <div ref={chatBoxRef}>
       <div className="py-2 max-w-[520px]">
         <div className="mb-[15px]">
           <h1 className="text-5xl text-center font-bold">Чат БЖУ</h1>
@@ -224,7 +251,7 @@ function Chat(props: TChatProps) {
           onTogglerChange={handlers.onTogglerChange}
         />
       </div>
-    </>
+    </div>
   );
 }
 

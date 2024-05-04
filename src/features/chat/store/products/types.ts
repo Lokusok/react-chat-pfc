@@ -6,5 +6,10 @@ export type TProduct = {
 
 export type TProductsState = {
   activeProduct: TProduct | null;
+};
+
+export type TProductActions = {
   setActiveProduct: (product: TProduct) => void;
 };
+
+export type TInitProductsState = TProductsState & TProductActions;

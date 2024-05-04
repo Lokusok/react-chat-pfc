@@ -1,10 +1,11 @@
 import { memo } from 'react';
-import ChatWrapper from '../features/chat/containers/chat-wrapper';
+
+import ChatPage from '../features/chat/pages/chat';
 
 function App() {
   return (
     <div className="max-w-[720px] mx-auto flex flex-col grow justify-center">
-      <ChatWrapper />
+      <ChatPage />
     </div>
   );
 }
