@@ -1,19 +1,5 @@
-const phrases = {
-  aLotCarbohydrates: 'Хочу продукт с большим количеством углеводов.',
-  aLotFats: 'Хочу продукт с большим количеством жиров.',
-  aLotProteins: 'Хочу продукт с большим количеством белков.',
-
-  aSmallCarbohydrates: 'Хочу продукт с малым количеством углеводов.',
-  aSmallFats: 'Хочу продукт с малым количеством жиров.',
-  aSmallProteins: 'Хочу продукт с малым количеством белков.',
-
-  balanced: 'Хочу сбалансированный продукт.',
-};
-
-type TBuildPhraseProps = {
-  product: TProducts;
-  aLot: boolean;
-};
+import phrases from './phrases';
+import { TBuildPhraseProps } from './types';
 
 /**
  * Получить фразу в соответствии с продуктом и его количеством

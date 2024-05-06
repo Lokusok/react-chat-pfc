@@ -16,5 +16,7 @@ module.exports = {
     ],
     'react-refresh/only-export-components': 'off',
     'no-unsafe-finally': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/ban-ts-comment': 'off',
   },
 };
