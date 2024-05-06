@@ -9,7 +9,6 @@ function buildPhrase({ product, aLot }: TBuildPhraseProps): string {
 
   if (product === 'balanced') {
     text = phrases[product];
-    console.log({ product, text });
   } else {
     let key = aLot ? 'aLot' : 'aSmall';
 

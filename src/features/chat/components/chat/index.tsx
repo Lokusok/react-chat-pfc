@@ -13,6 +13,7 @@ type TChatProps = {
   loadingProduct?: TProducts | null;
   loading?: boolean;
   dialog: TMessage[];
+  showLargeDefault?: boolean;
   callbacks: {
     getLargeCarbohydrates: () => void;
     getLargeFats: () => void;
@@ -26,9 +27,16 @@ type TChatProps = {
 };
 
 function Chat(props: TChatProps) {
-  const { loading, loadingProduct, onMoreBtnClick, dialog, callbacks } = props;
+  const {
+    loading,
+    loadingProduct,
+    onMoreBtnClick,
+    dialog,
+    callbacks,
+    showLargeDefault = false,
+  } = props;
 
-  const [showLarge, setShowLarge] = useState(false);
+  const [showLarge, setShowLarge] = useState(showLargeDefault);
 
   const dialogBoxRef = useRef<HTMLDivElement>(null);
   const chatBoxRef = useRef<HTMLDivElement>(null);
@@ -44,6 +52,7 @@ function Chat(props: TChatProps) {
           onClick={callbacks.getLargeCarbohydrates}
           disabled={options.disabledActions}
           className="btn btn-outline"
+          data-testid="action-a-lot-carbohydrates"
         >
           {loadingProduct === 'carbohydrates' && (
             <span className="loading loading-spinner"></span>
@@ -54,6 +63,7 @@ function Chat(props: TChatProps) {
           onClick={callbacks.getLargeFats}
           disabled={options.disabledActions}
           className="btn btn-outline"
+          data-testid="action-a-lot-fats"
         >
           {loadingProduct === 'fats' && (
             <span className="loading loading-spinner"></span>
@@ -64,6 +74,7 @@ function Chat(props: TChatProps) {
           onClick={callbacks.getLargeProteins}
           disabled={options.disabledActions}
           className="btn btn-outline"
+          data-testid="action-a-lot-proteins"
         >
           {loadingProduct === 'proteins' && (
             <span className="loading loading-spinner"></span>
@@ -78,6 +89,7 @@ function Chat(props: TChatProps) {
           onClick={callbacks.getSmallCarbohydrates}
           disabled={options.disabledActions}
           className="btn btn-outline"
+          data-testid="action-a-small-carbohydrates"
         >
           {loadingProduct === 'carbohydrates' && (
             <span className="loading loading-spinner"></span>
@@ -88,6 +100,7 @@ function Chat(props: TChatProps) {
           onClick={callbacks.getSmallFats}
           disabled={options.disabledActions}
           className="btn btn-outline"
+          data-testid="action-a-small-fats"
         >
           {loadingProduct === 'fats' && (
             <span className="loading loading-spinner"></span>
@@ -98,6 +111,7 @@ function Chat(props: TChatProps) {
           onClick={callbacks.getSmallProteins}
           disabled={options.disabledActions}
           className="btn btn-outline"
+          data-testid="action-a-small-proteins"
         >
           {loadingProduct === 'proteins' && (
             <span className="loading loading-spinner"></span>
@@ -183,7 +197,11 @@ function Chat(props: TChatProps) {
         >
           {dialog.map((message) =>
             message.from === 'bot' ? (
-              <div key={message.id} className="chat chat-start ">
+              <div
+                data-bot={true}
+                key={message.id}
+                className="chat chat-start "
+              >
                 <div className="chat-image avatar">
                   <div className="w-10 rounded-full">
                     <img
