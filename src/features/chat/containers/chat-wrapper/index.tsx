@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef } from 'react';
+import { memo, useRef } from 'react';
 
 import Chat from '../../components/chat';
 
@@ -9,6 +9,7 @@ import { useProductsStore, useChatStore, useSnackbarsStore } from '../../store';
 
 import buildPhrase from '../../utils/build-phrase';
 import buildBotMessage from '../../utils/build-bot-message';
+import Modal from '../../components/modal';
 
 function ChatWrapper() {
   const modalInfoRef = useRef<HTMLDialogElement>(null);
@@ -52,35 +53,28 @@ function ChatWrapper() {
   };
 
   const callbacks = {
-    getLargeCarbohydrates: async () => {
-      const productItem = await helpers.fetchProduct('carbohydrates', true);
-      console.log(productItem);
+    getLargeCarbohydrates: () => {
+      helpers.fetchProduct('carbohydrates', true);
     },
-    getLargeFats: async () => {
-      const productItem = await helpers.fetchProduct('fats', true);
-      console.log(productItem);
+    getLargeFats: () => {
+      helpers.fetchProduct('fats', true);
     },
-    getLargeProteins: async () => {
-      const productItem = await helpers.fetchProduct('proteins', true);
-      console.log(productItem);
+    getLargeProteins: () => {
+      helpers.fetchProduct('proteins', true);
     },
 
-    getSmallCarbohydrates: async () => {
-      const productItem = await helpers.fetchProduct('carbohydrates', false);
-      console.log(productItem);
+    getSmallCarbohydrates: () => {
+      helpers.fetchProduct('carbohydrates', false);
     },
-    getSmallFats: async () => {
-      const productItem = await helpers.fetchProduct('fats', false);
-      console.log(productItem);
+    getSmallFats: () => {
+      helpers.fetchProduct('fats', false);
     },
-    getSmallProteins: async () => {
-      const productItem = await helpers.fetchProduct('proteins', false);
-      console.log(productItem);
+    getSmallProteins: () => {
+      helpers.fetchProduct('proteins', false);
     },
 
-    getBalanced: async () => {
-      const productItem = await helpers.fetchProduct('balanced');
-      console.log(productItem);
+    getBalanced: () => {
+      helpers.fetchProduct('balanced');
     },
   };
 
@@ -92,13 +86,6 @@ function ChatWrapper() {
     },
   };
 
-  // will remove on later stages
-  console.log({ waiting: chatStore.waiting });
-
-  useEffect(() => {
-    console.log('messages:', chatStore.messages);
-  }, [chatStore.messages]);
-
   return (
     <>
       <Chat
@@ -109,37 +96,7 @@ function ChatWrapper() {
         onMoreBtnClick={handlers.onMoreBtnClick}
       />
 
-      <dialog
-        ref={modalInfoRef}
-        id="info-product-modal"
-        className="modal modal-bottom sm:modal-middle"
-      >
-        <div className="modal-box">
-          <h3 className="font-bold text-[30px] text-center mb-2">
-            {productsStore.activeProduct?.title}: описание
-          </h3>
-          <div className="flex justify-center">
-            <div className="max-w-[300px] rounded-lg overflow-hidden">
-              <img
-                src={productsStore.activeProduct?.image}
-                alt={productsStore.activeProduct?.title}
-              />
-            </div>
-          </div>
-          <p className="py-4">{productsStore.activeProduct?.description}</p>
-          <div className="modal-action">
-            <form method="dialog">
-              <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-                ✕
-              </button>
-              <button className="btn">Закрыть</button>
-            </form>
-          </div>
-        </div>
-        <form method="dialog" className="modal-backdrop">
-          <button>Закрыть</button>
-        </form>
-      </dialog>
+      <Modal activeProduct={productsStore.activeProduct!} ref={modalInfoRef} />
     </>
   );
 }

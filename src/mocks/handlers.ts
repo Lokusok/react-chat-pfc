@@ -7,8 +7,6 @@ export const handlers = [
     const url = new URL(request.url);
     const aLot = url.searchParams.get('aLot') === 'true';
 
-    console.log('aLot ===', aLot);
-
     const arrayToChoice = aLot
       ? products.carbohydrates.aLot
       : products.carbohydrates.notALot;
@@ -20,8 +18,6 @@ export const handlers = [
     const url = new URL(request.url);
     const aLot = url.searchParams.get('aLot') === 'true';
 
-    console.log('aLot ===', aLot);
-
     const arrayToChoice = aLot ? products.fats.aLot : products.fats.notALot;
 
     return HttpResponse.json(getRandomFromArray(arrayToChoice));
@@ -30,8 +26,6 @@ export const handlers = [
   http.get('/proteins', ({ request }) => {
     const url = new URL(request.url);
     const aLot = url.searchParams.get('aLot') === 'true';
-
-    console.log('aLot ===', aLot);
 
     const arrayToChoice = aLot
       ? products.proteins.aLot
