@@ -178,7 +178,6 @@ function Chat(props: TChatProps) {
       (entries) => {
         entries.forEach((entry) => {
           setIsScrollDownVisible(!entry.isIntersecting);
-          console.log(entry.isIntersecting);
         });
       },
       {

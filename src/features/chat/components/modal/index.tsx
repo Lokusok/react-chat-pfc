@@ -12,7 +12,7 @@ function Modal(props: TModalProps, ref: React.ForwardedRef<HTMLDialogElement>) {
       id="info-product-modal"
       className="modal modal-bottom sm:modal-middle"
     >
-      <div className="modal-box">
+      <div className="modal-box scrollbar-thin scrollbar-thumb-rounded-full scrollbar-thumb-[#00c530] scrollbar-track-[rgba(0,0,0,0.1)]">
         <h3 className="font-bold text-[30px] text-center mb-2">
           {props.activeProduct?.title}: описание
         </h3>
@@ -28,7 +28,7 @@ function Modal(props: TModalProps, ref: React.ForwardedRef<HTMLDialogElement>) {
         <p className="py-4">{props.activeProduct?.description}</p>
         <div className="modal-action">
           <form method="dialog">
-            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-5 top-5">
               ✕
             </button>
             <button className="btn">Закрыть</button>
