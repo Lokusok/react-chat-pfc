@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import ChatPage from '../features/chat/pages/chat';
+import ChatPage from '@/features/chat/pages/chat';
 
 function App() {
   return (
