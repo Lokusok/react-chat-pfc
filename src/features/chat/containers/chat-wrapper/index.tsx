@@ -96,7 +96,7 @@ function ChatWrapper() {
         onMoreBtnClick={handlers.onMoreBtnClick}
       />
 
-      <Modal activeProduct={productsStore.activeProduct!} ref={modalInfoRef} />
+      <Modal activeProduct={productsStore.activeProduct} ref={modalInfoRef} />
     </>
   );
 }

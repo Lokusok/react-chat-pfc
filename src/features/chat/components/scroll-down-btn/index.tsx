@@ -11,7 +11,7 @@ function ScrollDownBtn(props: TScrollDownBtnProps) {
 
   return (
     <div className={className} data-tip="Вниз">
-      <button onClick={props.onClick} className="btn btn-md btn-circle">
+      <button onClick={props.onClick} className="btn btn-md btn-circle glass">
         <svg
           className="h-6 w-6 fill-current md:h-8 md:w-8 rotate-[-90deg]"
           xmlns="http://www.w3.org/2000/svg"

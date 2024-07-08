@@ -3,6 +3,8 @@ import { Search } from 'lucide-react';
 
 import botImage from '../../assets/bot-image.jpg';
 import { TMessage } from '../../store/chat/types';
+import normalizeImagePathName from '../../utils/normalize-image-path-name';
+import ProductPreview from '../product-preview';
 
 type TBotMessageProps = {
   message: TMessage;
@@ -23,11 +25,11 @@ function BotMessage(
       <div className="chat-bubble">
         {Boolean(message.image) && (
           <div className="rounded-lg overflow-hidden mb-[15px] max-w-[100%] relative">
-            <img
-              className="w-[100%] h-[200px] object-cover"
-              src={message.image}
-              alt={message.product?.title || 'Продукт'}
+            <ProductPreview
+              imageName={normalizeImagePathName(message.product!.title)}
+              alt={message.product!.title}
             />
+
             {Boolean(onMoreBtnClick) && (
               <div
                 onClick={onMoreBtnClick}

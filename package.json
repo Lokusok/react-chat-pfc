@@ -9,16 +9,21 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "ts:check": "tsc",
-    "test": "vitest"
+    "test": "vitest",
+    "images:convert": "node ./src/mocks/convert-to-local-images.js"
   },
   "dependencies": {
     "axios": "^1.6.8",
     "clsx": "^2.1.1",
+    "imagemin-avif": "^0.1.6",
+    "imagemin-jpegtran": "^7.0.0",
+    "imagemin-pngquant": "^10.0.0",
     "lucide-react": "^0.378.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-virtuoso": "^4.7.11",
     "shallowequal": "^1.1.0",
+    "sharp": "^0.33.4",
     "tailwind-scrollbar": "^3.1.0",
     "zustand": "^4.5.2"
   },
@@ -37,15 +42,15 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
+    "imagemin": "^9.0.0",
+    "imagemin-webp": "^8.0.0",
     "jsdom": "^24.0.0",
     "msw": "^2.3.1",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.3",
     "typescript": "^5.2.2",
     "vite": "^5.2.0",
-    "vitest": "^1.6.0",
-    "imagemin": "^9.0.0",
-    "imagemin-webp": "^8.0.0"
+    "vitest": "^1.6.0"
   },
   "msw": {
     "workerDirectory": [

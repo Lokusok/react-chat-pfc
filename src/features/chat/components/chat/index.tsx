@@ -162,11 +162,24 @@ function Chat(props: TChatProps) {
     if (!dialogBoxRef.current) return;
     const dialogBoxNode = dialogBoxRef.current;
 
-    dialogBoxNode.scrollTo({
-      top: dialogBoxNode.scrollHeight,
-      behavior: 'smooth',
+    window.requestAnimationFrame(() => {
+      dialogBoxNode.scrollTo({
+        top: dialogBoxNode.scrollHeight,
+        behavior: 'smooth',
+      });
     });
   }, [dialog]);
+
+  useLayoutEffect(() => {
+    if (!dialogBoxRef.current) return;
+    const dialogBoxNode = dialogBoxRef.current;
+
+    window.requestAnimationFrame(() => {
+      dialogBoxNode.scrollTo({
+        top: dialogBoxNode.scrollHeight,
+      });
+    });
+  }, []);
 
   useEffect(() => {
     if (!lastMessageRef.current || !chatBoxRef.current) return;
