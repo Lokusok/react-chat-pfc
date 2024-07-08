@@ -1,10 +1,10 @@
 import { memo, forwardRef } from 'react';
 import { Search } from 'lucide-react';
 
-import botImage from '../../assets/bot-image.jpg';
-import { TMessage } from '../../store/chat/types';
-import normalizeImagePathName from '../../utils/normalize-image-path-name';
-import ProductPreview from '../product-preview';
+import botImage from '../../../assets/bot-image.jpg';
+import { TMessage } from '../../../store/chat/types';
+import normalizeImagePathName from '../../../utils/normalize-image-path-name';
+import ProductPreview from '../../product/product-preview';
 
 type TBotMessageProps = {
   message: TMessage;

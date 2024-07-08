@@ -9,7 +9,9 @@ import { useProductsStore, useChatStore, useSnackbarsStore } from '../../store';
 
 import buildPhrase from '../../utils/build-phrase';
 import buildBotMessage from '../../utils/build-bot-message';
-import Modal from '../../components/modal';
+import Modal from '../../layouts/modal';
+import ProductInfo from '../../components/product/product-info';
+import DeleteMessagesConfirmation from '../../components/chat/delete-messages-confirmation';
 
 function ChatWrapper() {
   const modalInfoRef = useRef<HTMLDialogElement>(null);
@@ -84,6 +86,9 @@ function ChatWrapper() {
       productsStore.setActiveProduct(product);
       modalInfoRef.current.showModal();
     },
+    onDeleteBtnClick: () => {
+      chatStore.resetMessages();
+    },
   };
 
   return (
@@ -94,9 +99,41 @@ function ChatWrapper() {
         callbacks={callbacks}
         dialog={chatStore.messages}
         onMoreBtnClick={handlers.onMoreBtnClick}
+        onDeleteBtnClick={handlers.onDeleteBtnClick}
+        isDeleteBtnActive={chatStore.messages.length <= 2}
       />
 
-      <Modal activeProduct={productsStore.activeProduct} ref={modalInfoRef} />
+      <Modal modalId="info-product-modal" ref={modalInfoRef}>
+        <ProductInfo activeProduct={productsStore.activeProduct} />
+      </Modal>
+
+      {/* For test purposes only */}
+      <button
+        className="btn"
+        onClick={() =>
+          document
+            .getElementById('confirmation-delete-messages-modal')
+            .showModal()
+        }
+      >
+        open modal
+      </button>
+      <Modal
+        modalId="confirmation-delete-messages-modal"
+        renderActions={() => (
+          <>
+            <div className="modal-action flex gap-x-[10px]">
+              <form method="dialog">
+                <button className="btn">Отмена</button>
+              </form>
+
+              <button className="btn glass">Подтвердить</button>
+            </div>
+          </>
+        )}
+      >
+        <DeleteMessagesConfirmation />
+      </Modal>
     </>
   );
 }

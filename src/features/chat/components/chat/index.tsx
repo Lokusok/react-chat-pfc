@@ -1,12 +1,14 @@
 import { memo, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
-import Actions from '../chat-actions';
+import Actions from './chat-actions';
 
 import { TProduct } from '../../store/products/types';
 import { TMessage } from '../../store/chat/types';
-import ScrollDownBtn from '../scroll-down-btn';
-import BotMessage from '../bot-message';
-import UserMessage from '../user-message';
+
+import ScrollDownBtn from './scroll-down-btn';
+import BotMessage from '../messages/bot-message';
+import UserMessage from '../messages/user-message';
+import TrashBtn from './trash-btn';
 
 type TChatProps = {
   loadingProduct?: TProducts | null;
@@ -23,6 +25,8 @@ type TChatProps = {
     getBalanced: () => void;
   };
   onMoreBtnClick?: (product: TProduct) => void;
+  onDeleteBtnClick?: () => void;
+  isDeleteBtnActive?: boolean;
 };
 
 function Chat(props: TChatProps) {
@@ -30,6 +34,8 @@ function Chat(props: TChatProps) {
     loading,
     loadingProduct,
     onMoreBtnClick,
+    onDeleteBtnClick,
+    isDeleteBtnActive,
     dialog,
     callbacks,
     showLargeDefault = false,
@@ -216,6 +222,15 @@ function Chat(props: TChatProps) {
           <ScrollDownBtn
             onClick={handlers.onScrollDownBtnClick}
             className="absolute right-[15px] bottom-[15px] z-10"
+          />
+        )}
+
+        {Boolean(onDeleteBtnClick) && (
+          <TrashBtn
+            onClick={onDeleteBtnClick}
+            disabled={isDeleteBtnActive}
+            className="absolute -left-[55px] top-[75px]"
+            tooltipText="Очистить?"
           />
         )}
 

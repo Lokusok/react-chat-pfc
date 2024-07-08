@@ -6,12 +6,20 @@ import { TMessage, TInitChatState } from './types';
 import buildMessage from '../../utils/build-message';
 import initStartMessages from './utils/init-start-messages';
 
+const initState = {
+  messages: initStartMessages(),
+  waiting: false,
+  waitingProduct: null,
+};
+
 export const useChatStore = create<TInitChatState>()(
   persist(
     (set) => ({
-      messages: initStartMessages(),
-      waiting: false,
-      waitingProduct: null,
+      ...initState,
+
+      resetMessages: () => {
+        set(initState);
+      },
 
       addMessage: (message: Omit<TMessage, 'id'> | TMessage) => {
         let correctMessage = { ...message };
@@ -38,7 +46,7 @@ export const useChatStore = create<TInitChatState>()(
       },
     }),
     {
-      name: 'chat-storage',
+      name: 'chat2-storage',
       storage: createJSONStorage(() => sessionStorage),
     }
   )

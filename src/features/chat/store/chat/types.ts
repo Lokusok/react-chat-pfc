@@ -18,6 +18,7 @@ export type TChatState = {
 };
 
 export type TChatActions = {
+  resetMessages: () => void;
   addMessage: (message: Omit<TMessage, 'id'>) => void;
   setWaiting: (waiting: boolean) => void;
   setWaitingProduct: (waitingProduct: TProducts | null) => void;

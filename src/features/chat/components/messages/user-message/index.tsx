@@ -1,6 +1,6 @@
 import { memo } from 'react';
-import { TMessage } from '../../store/chat/types';
-import userImage from '../../assets/user-image.jpg';
+import { TMessage } from '../../../store/chat/types';
+import userImage from '../../../assets/user-image.jpg';
 
 type TUserMessageProps = {
   message: TMessage;
