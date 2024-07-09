@@ -1,4 +1,5 @@
-import { memo, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
+import { ListRange, Virtuoso, VirtuosoHandle } from 'react-virtuoso';
 
 import Actions from './chat-actions';
 
@@ -42,11 +43,10 @@ function Chat(props: TChatProps) {
   } = props;
 
   const [showLarge, setShowLarge] = useState(showLargeDefault);
-  const [isScrollDownVisible, setIsScrollDownVisible] = useState(false);
+  const [isScrollDownVisible, setIsScrollDownVisible] = useState(true);
 
-  const dialogBoxRef = useRef<HTMLDivElement>(null);
   const chatBoxRef = useRef<HTMLDivElement>(null);
-  const lastMessageRef = useRef<HTMLDivElement>(null);
+  const virtuosoRef = useRef<VirtuosoHandle>(null);
 
   const options = {
     disabledActions: loading,
@@ -63,12 +63,15 @@ function Chat(props: TChatProps) {
     },
 
     onScrollDownBtnClick: () => {
-      if (!dialogBoxRef.current) return;
+      if (!virtuosoRef.current) return;
 
-      dialogBoxRef.current.scrollTo({
-        top: dialogBoxRef.current.scrollHeight,
+      virtuosoRef.current.scrollToIndex({
+        index: dialog.length - 1,
         behavior: 'smooth',
       });
+    },
+    onVirtuosoRangeChanged: (range: ListRange) => {
+      setIsScrollDownVisible(range.endIndex !== dialog.length - 1);
     },
   };
 
@@ -164,51 +167,18 @@ function Chat(props: TChatProps) {
     divider: () => <div className="divider">Кнопки</div>,
   };
 
-  useLayoutEffect(() => {
-    if (!dialogBoxRef.current) return;
-    const dialogBoxNode = dialogBoxRef.current;
-
-    window.requestAnimationFrame(() => {
-      dialogBoxNode.scrollTo({
-        top: dialogBoxNode.scrollHeight,
-        behavior: 'smooth',
-      });
-    });
-  }, [dialog]);
-
-  useLayoutEffect(() => {
-    if (!dialogBoxRef.current) return;
-    const dialogBoxNode = dialogBoxRef.current;
-
-    window.requestAnimationFrame(() => {
-      dialogBoxNode.scrollTo({
-        top: dialogBoxNode.scrollHeight,
-      });
-    });
-  }, []);
-
   useEffect(() => {
-    if (!lastMessageRef.current || !chatBoxRef.current) return;
+    if (!virtuosoRef.current) return;
 
-    const chatBoxNode = chatBoxRef.current;
-    const lastMessageNode = lastMessageRef.current;
+    const virtuosoHandleInstance = virtuosoRef.current;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          setIsScrollDownVisible(!entry.isIntersecting);
-        });
-      },
-      {
-        root: chatBoxNode,
-      }
-    );
-
-    observer.observe(lastMessageNode);
-
-    return () => {
-      observer.unobserve(lastMessageNode);
-    };
+    window.requestAnimationFrame(() => {
+      virtuosoHandleInstance.scrollToIndex({
+        index: dialog.length - 1,
+        behavior: 'smooth',
+        align: 'end',
+      });
+    });
   }, [dialog]);
 
   return (
@@ -234,29 +204,39 @@ function Chat(props: TChatProps) {
           />
         )}
 
-        <div
-          ref={dialogBoxRef}
-          className="relative max-h-[370px] px-3 overflow-y-auto scrollbar-thin scrollbar-thumb-rounded-full scrollbar-thumb-[#00c530] scrollbar-track-[rgba(0,0,0,0.1)]"
-        >
-          {dialog.length > 3 && (
-            <div className="bg-neutral w-[100%] z-[100] pointer-events-none sticky top-[0px] flex h-[35px] [mask-image:linear-gradient(#000000,transparent)]"></div>
-          )}
+        {dialog.length > 3 && (
+          <div className="bg-neutral w-[100%] rounded-[6px] z-[100] absolute pointer-events-none top-[70px] flex h-[35px] [mask-image:linear-gradient(#000000,transparent)]"></div>
+        )}
 
-          <div className="rounded-[6px] overflow-hidden">
-            {dialog.map((message) =>
-              message.from === 'bot' ? (
+        <Virtuoso
+          rangeChanged={handlers.onVirtuosoRangeChanged}
+          ref={virtuosoRef}
+          followOutput="smooth"
+          style={{
+            width: 520,
+            height: dialog.length > 2 ? 370 : 170,
+            transition: 'height ease 0.3s',
+            willChange: 'height',
+            maxHeight: 370,
+          }}
+          className="relative max-h-[370px] border-r-[transparent] border-r-[2px] overflow-y-auto scrollbar-thin scrollbar-thumb-rounded-full scrollbar-thumb-[#00c530] scrollbar-track-[rgba(0,0,0,0.1)]"
+          data={dialog}
+          initialTopMostItemIndex={dialog.length - 1}
+          itemContent={(_, message) => {
+            return message.from === 'bot' ? (
+              <div className="pl-3">
                 <BotMessage
-                  key={message.id}
-                  ref={lastMessageRef}
                   message={message}
                   onMoreBtnClick={() => handlers.onMoreBtnClick(message)}
                 />
-              ) : (
-                <UserMessage key={message.id} message={message} />
-              )
-            )}
-          </div>
-        </div>
+              </div>
+            ) : (
+              <div className="pr-3">
+                <UserMessage message={message} />
+              </div>
+            );
+          }}
+        />
       </div>
 
       <div className="pb-2">
@@ -272,7 +252,5 @@ function Chat(props: TChatProps) {
     </div>
   );
 }
-
-// scrollbar-color: #00c530 #252525;
 
 export default memo(Chat);

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { TProduct } from '@/features/chat/store/products/types';
 
 const rootApi = axios.create({
   baseURL: '/',
@@ -21,7 +22,6 @@ class ApiService {
    */
   static async getProduct(options: TGetProductOptions) {
     try {
-      // throw new Error('Err'); // Для тестов ошибок
       const isFullOptions = 'aLot' in options;
       const params = isFullOptions
         ? {
@@ -30,7 +30,13 @@ class ApiService {
             },
           }
         : {};
-      const response = await rootApi.get(`/${options.product}`, params);
+      const response = await rootApi.get<TProduct>(
+        `/${options.product}`,
+        params
+      );
+
+      if (!response.data.title) throw new Error();
+
       return response.data;
     } catch (err) {
       return {

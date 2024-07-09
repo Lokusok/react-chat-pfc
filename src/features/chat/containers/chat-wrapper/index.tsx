@@ -33,12 +33,13 @@ function ChatWrapper() {
         chatStore.addMessage({ from: 'user', text, type: 'default' });
 
         await new Promise((res) => setTimeout(res, 1000));
+
         const productItem = await ApiService.getProduct({
           product,
           aLot,
         });
 
-        if (productItem.error) {
+        if ('error' in productItem && productItem.error) {
           return snackbarsStore.setErrorSnack({
             buttonText: 'Понятно',
             bodyText: productItem.error,
@@ -46,8 +47,10 @@ function ChatWrapper() {
           });
         }
 
-        const botMessage = buildBotMessage(productItem);
-        chatStore.addMessage(botMessage);
+        if (!('error' in productItem)) {
+          const botMessage = buildBotMessage(productItem);
+          chatStore.addMessage(botMessage);
+        }
 
         return productItem;
       } finally {
@@ -88,8 +91,6 @@ function ChatWrapper() {
       if (!modalInfoRef.current) return;
       productsStore.setActiveProduct(product);
       modalInfoRef.current.showModal();
-
-      // modalsStore.addActiveModal('product-info-modal');
     },
     onDeleteBtnClick: () => {
       if (!modalConfirmationDeleteRef.current) return;

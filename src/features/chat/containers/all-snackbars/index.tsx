@@ -8,7 +8,7 @@ function AllSnackbars() {
   return (
     <>
       {Boolean(snackbarsStore.errorSnack) && (
-        <div className="toast toast-top toast-center">
+        <div className="toast toast-top toast-center z-[200]">
           <div className="alert alert-error">
             <span>{snackbarsStore.errorSnack?.bodyText}</span>
 
