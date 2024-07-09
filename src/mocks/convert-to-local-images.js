@@ -101,8 +101,6 @@ function convertToLocalImages(fnToProvide) {
         iterateArrays(newObj)
       }
     }
-
-    return iterateArrays.state;
   };
 
   iterateArrays(products);

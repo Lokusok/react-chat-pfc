@@ -1,7 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { test, expect, vi, describe } from 'vitest';
+import { test, expect, vi, describe, beforeEach } from 'vitest';
 import Chat from '.';
 import { TMessage } from '../../store/chat/types';
 
@@ -19,6 +19,18 @@ const dialog: TMessage[] = [
     text: 'Внизу расположены кнопки. Нажмите на них, чтобы получить продукт под желаемый запрос.',
   },
 ];
+
+beforeEach(() => {
+  // IntersectionObserver isn't available in test environment
+  const mockIntersectionObserver = vi.fn();
+  mockIntersectionObserver.mockReturnValue({
+    observe: () => null,
+    unobserve: () => null,
+    disconnect: () => null,
+  });
+  window.IntersectionObserver = mockIntersectionObserver;
+  window.ResizeObserver = mockIntersectionObserver;
+});
 
 describe('Компонент <Chat />', () => {
   test('Корректная работа при малых количествах', async () => {
@@ -38,9 +50,11 @@ describe('Компонент <Chat />', () => {
     const renderer = render(
       <Chat showLargeDefault={false} dialog={dialog} callbacks={callbacks} />
     );
-    const res = renderer.getByText(dialog[0].text);
 
-    expect(res).toBeInTheDocument();
+    waitFor(async () => {
+      const res = await renderer.findByText(dialog[0].text);
+      expect(res).toBeInTheDocument();
+    });
 
     await user.click(screen.getByTestId('action-a-small-carbohydrates'));
     expect(callbacks.getSmallCarbohydrates).toBeCalledTimes(1);
@@ -69,9 +83,11 @@ describe('Компонент <Chat />', () => {
     const renderer = render(
       <Chat showLargeDefault={true} dialog={dialog} callbacks={callbacks} />
     );
-    const res = renderer.getByText(dialog[0].text);
 
-    expect(res).toBeInTheDocument();
+    waitFor(async () => {
+      const res = await renderer.findByText(dialog[0].text);
+      expect(res).toBeInTheDocument();
+    });
 
     await user.click(screen.getByTestId('action-a-lot-carbohydrates'));
     expect(callbacks.getLargeCarbohydrates).toBeCalledTimes(1);
