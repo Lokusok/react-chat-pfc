@@ -238,18 +238,24 @@ function Chat(props: TChatProps) {
           ref={dialogBoxRef}
           className="relative max-h-[370px] px-3 overflow-y-auto scrollbar-thin scrollbar-thumb-rounded-full scrollbar-thumb-[#00c530] scrollbar-track-[rgba(0,0,0,0.1)]"
         >
-          {dialog.map((message) =>
-            message.from === 'bot' ? (
-              <BotMessage
-                key={message.id}
-                ref={lastMessageRef}
-                message={message}
-                onMoreBtnClick={() => handlers.onMoreBtnClick(message)}
-              />
-            ) : (
-              <UserMessage key={message.id} message={message} />
-            )
+          {dialog.length > 3 && (
+            <div className="bg-neutral w-[100%] z-[100] pointer-events-none sticky top-[0px] flex h-[35px] [mask-image:linear-gradient(#000000,transparent)]"></div>
           )}
+
+          <div className="rounded-[6px] overflow-hidden">
+            {dialog.map((message) =>
+              message.from === 'bot' ? (
+                <BotMessage
+                  key={message.id}
+                  ref={lastMessageRef}
+                  message={message}
+                  onMoreBtnClick={() => handlers.onMoreBtnClick(message)}
+                />
+              ) : (
+                <UserMessage key={message.id} message={message} />
+              )
+            )}
+          </div>
         </div>
       </div>
 

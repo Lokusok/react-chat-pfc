@@ -3,18 +3,21 @@ import { memo, useRef } from 'react';
 import Chat from '../../components/chat';
 
 import ApiService from '../../../../api/api-service';
-import { TProduct } from '../../store/products/types';
 
 import { useProductsStore, useChatStore, useSnackbarsStore } from '../../store';
 
-import buildPhrase from '../../utils/build-phrase';
-import buildBotMessage from '../../utils/build-bot-message';
 import Modal from '../../layouts/modal';
 import ProductInfo from '../../components/product/product-info';
 import DeleteMessagesConfirmation from '../../components/chat/delete-messages-confirmation';
 
+import buildPhrase from '../../utils/build-phrase';
+import buildBotMessage from '../../utils/build-bot-message';
+
+import { TProduct } from '../../store/products/types';
+
 function ChatWrapper() {
   const modalInfoRef = useRef<HTMLDialogElement>(null);
+  const modalConfirmationDeleteRef = useRef<HTMLDialogElement>(null);
 
   const productsStore = useProductsStore();
   const chatStore = useChatStore();
@@ -85,9 +88,18 @@ function ChatWrapper() {
       if (!modalInfoRef.current) return;
       productsStore.setActiveProduct(product);
       modalInfoRef.current.showModal();
+
+      // modalsStore.addActiveModal('product-info-modal');
     },
     onDeleteBtnClick: () => {
+      if (!modalConfirmationDeleteRef.current) return;
+      modalConfirmationDeleteRef.current.showModal();
+    },
+    onDeleteConfirm: () => {
       chatStore.resetMessages();
+
+      if (!modalConfirmationDeleteRef.current) return;
+      modalConfirmationDeleteRef.current.close();
     },
   };
 
@@ -107,19 +119,9 @@ function ChatWrapper() {
         <ProductInfo activeProduct={productsStore.activeProduct} />
       </Modal>
 
-      {/* For test purposes only */}
-      <button
-        className="btn"
-        onClick={() =>
-          document
-            .getElementById('confirmation-delete-messages-modal')
-            .showModal()
-        }
-      >
-        open modal
-      </button>
       <Modal
         modalId="confirmation-delete-messages-modal"
+        ref={modalConfirmationDeleteRef}
         renderActions={() => (
           <>
             <div className="modal-action flex gap-x-[10px]">
@@ -127,7 +129,9 @@ function ChatWrapper() {
                 <button className="btn">Отмена</button>
               </form>
 
-              <button className="btn glass">Подтвердить</button>
+              <button onClick={handlers.onDeleteConfirm} className="btn glass">
+                Подтвердить
+              </button>
             </div>
           </>
         )}

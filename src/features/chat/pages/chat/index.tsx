@@ -7,6 +7,7 @@ function ChatPage() {
   return (
     <>
       <ChatWrapper />
+
       <AllSnackbars />
     </>
   );
